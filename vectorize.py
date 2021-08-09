@@ -1,19 +1,18 @@
 from utils import getXy
-import pandas as pd
-import numpy as np
 from sklearn.utils import shuffle
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-import spacy # pyright: reportMissingImports=false
+import spacy
+from sklearn.model_selection import train_test_split
 
 def splitData():
     X,y = getXy()
     X,y = shuffle(X, y)
 
-    X_train = X[0:.8*len(X)]
-    X_test = X[.8*len(X), len(X)]
+    X_train = X.iloc[:int(.8*len(X))]
+    X_test = X.iloc[int(.8*len(X)):]
 
-    y_train = y[0:.8*len(y)]
-    y_test = y[.8*len(y), len(y)]
+    y_train = y.iloc[:int(.8*len(y))]
+    y_test = y.iloc[int(.8*len(y)):]
 
     return X_train, X_test, y_train, y_test
 
@@ -36,8 +35,8 @@ def tokenize(line):
             clean_tokens.append(token.lemma_)
     return clean_tokens
 
-#X_train, X_test, y_train, y_test = splitData()
-X, y = getXy()
-train_vecs, test_vecs = vectorize(X, None, model_type = 'TFIDF')
+if __name__ == "__main__":
+    X_train, X_test, y_train, y_test = splitData()
+    train_vecs, test_vecs = vectorize(X_train, X_test, model_type = 'TFIDF')
 
-print(train_vecs)
+    print(test_vecs)
