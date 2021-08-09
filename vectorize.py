@@ -1,8 +1,10 @@
 from utils import getXy
+
 from sklearn.utils import shuffle
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-import spacy
 from sklearn.model_selection import train_test_split
+
+import spacy
 
 def splitData():
     X,y = getXy()
@@ -16,11 +18,11 @@ def splitData():
 
     return X_train, X_test, y_train, y_test
 
-def vectorize(X_train, X_test, model_type = 'TFIDF'):
+def vectorize(X_train, X_test, vocab_size=800, model_type = 'TFIDF'):
     if model_type.upper() == "BOW":
-        vectorizer = CountVectorizer(analyzer=tokenize, max_features=800) #Tokenize is callable, so used to process the raw input
+        vectorizer = CountVectorizer(analyzer=tokenize, max_features=vocab_size) #Tokenize is callable, so used to process the raw input
     elif model_type.upper() == "TFIDF":
-        vectorizer = TfidfVectorizer(analyzer=tokenize, max_features=800)
+        vectorizer = TfidfVectorizer(analyzer=tokenize, max_features=vocab_size)
     
     train_vecs = vectorizer.fit_transform(X_train)
     test_vecs = vectorizer.transform(X_test)
