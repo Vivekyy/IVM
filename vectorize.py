@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.utils import shuffle
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-import spacy
+import spacy # pyright: reportMissingImports=false
 
 def splitData():
     X,y = getXy()
@@ -19,9 +19,9 @@ def splitData():
 
 def vectorize(X_train, X_test, model_type = 'TFIDF'):
     if model_type.upper() == "BOW":
-        vectorizer = CountVectorizer(analyzer=tokenize) #Callable, so tokenize is used to process the raw input
+        vectorizer = CountVectorizer(analyzer=tokenize, max_features=800) #Tokenize is callable, so used to process the raw input
     elif model_type.upper() == "TFIDF":
-        vectorizer = TfidfVectorizer(analyzer=tokenize)
+        vectorizer = TfidfVectorizer(analyzer=tokenize, max_features=800)
     
     train_vecs = vectorizer.fit_transform(X_train)
     test_vecs = vectorizer.transform(X_test)
@@ -35,3 +35,9 @@ def tokenize(line):
         if (not token.is_stop) & (token.lemma_ != '-PRON-') & (not token.is_punct):
             clean_tokens.append(token.lemma_)
     return clean_tokens
+
+#X_train, X_test, y_train, y_test = splitData()
+X, y = getXy()
+train_vecs, test_vecs = vectorize(X, None, model_type = 'TFIDF')
+
+print(train_vecs)
