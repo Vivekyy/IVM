@@ -7,11 +7,27 @@ dependencies:
   - _openmp_mutex=4.5=1_gnu
   - blas=1.0=mkl
   - bottleneck=1.3.2=py39hdd57654_1
+  - brotlipy=0.7.0=py39h3811e60_1001
   - ca-certificates=2021.5.30=ha878542_0
+  - catalogue=2.0.4=py39hf3d152e_0
   - certifi=2021.5.30=py39hf3d152e_0
+  - cffi=1.14.6=py39he32792d_0
+  - chardet=4.0.0=py39hf3d152e_1
+  - charset-normalizer=2.0.0=pyhd8ed1ab_0
+  - click=7.1.2=pyh9f0ad1d_0
+  - colorama=0.4.4=pyh9f0ad1d_0
+  - cryptography=3.4.7=py39hbca0aa6_0
+  - cudatoolkit=11.2.2=he111cf0_8
+  - cupy=9.3.0=py39h499daff_0
+  - cymem=2.0.5=py39he80948d_2
+  - cython-blis=0.7.4=py39hce5d2b2_0
+  - dataclasses=0.8=pyhc8e2a94_1
   - et_xmlfile=1.1.0=py39h06a4308_0
+  - fastrlock=0.6=py39he80948d_1
+  - idna=3.1=pyhd3deb0d_0
   - intel-openmp=2021.3.0=h06a4308_3350
   - jdcal=1.4.1=py_0
+  - jinja2=3.0.1=pyhd8ed1ab_0
   - joblib=1.0.1=pyhd8ed1ab_0
   - ld_impl_linux-64=2.35.1=h7274673_9
   - libblas=3.9.0=10_mkl
@@ -23,32 +39,57 @@ dependencies:
   - libgomp=9.3.0=h5101ec6_17
   - liblapack=3.9.0=10_mkl
   - libstdcxx-ng=9.3.0=hd4cf53a_17
+  - markupsafe=2.0.1=py39h3811e60_0
   - mkl=2021.3.0=h06a4308_520
   - mkl-service=2.4.0=py39h7f8727e_0
   - mkl_fft=1.3.0=py39h42c9631_2
   - mkl_random=1.2.2=py39h51133e4_0
+  - murmurhash=1.0.5=py39he80948d_0
   - ncurses=6.2=he6710b0_1
   - numexpr=2.7.3=py39h22e1b3c_1
   - numpy=1.20.3=py39hf144106_0
   - numpy-base=1.20.3=py39h74d4b33_0
   - openpyxl=3.0.7=pyhd3eb1b0_0
   - openssl=1.1.1k=h7f98852_0
+  - packaging=21.0=pyhd8ed1ab_0
   - pandas=1.3.1=py39h8c16a72_0
+  - pathy=0.6.0=pyhd8ed1ab_0
   - pip=21.2.2=py39h06a4308_0
+  - preshed=3.0.5=py39he80948d_1
+  - pycparser=2.20=pyh9f0ad1d_2
+  - pydantic=1.8.2=py39h3811e60_0
+  - pyopenssl=20.0.1=pyhd8ed1ab_0
+  - pyparsing=2.4.7=pyh9f0ad1d_0
+  - pysocks=1.7.1=py39hf3d152e_3
   - python=3.9.6=h12debd9_0
   - python-dateutil=2.8.2=pyhd3eb1b0_0
   - python_abi=3.9=2_cp39
   - pytz=2021.1=pyhd3eb1b0_0
   - readline=8.1=h27cfd23_0
+  - requests=2.26.0=pyhd8ed1ab_0
   - scikit-learn=0.24.2=py39h4dfa638_0
   - scipy=1.6.3=py39hee8e79c_0
   - setuptools=52.0.0=py39h06a4308_0
+  - shellingham=1.4.0=pyh44b312d_0
   - six=1.16.0=pyhd3eb1b0_0
+  - smart_open=5.1.0=pyhd8ed1ab_1
+  - spacy=3.1.1=py39h5472131_0
+  - spacy-legacy=3.0.8=pyhd8ed1ab_0
   - sqlite=3.36.0=hc218d9a_0
+  - srsly=2.4.1=py39he80948d_0
+  - thinc=8.0.8=py39h5472131_0
   - threadpoolctl=2.2.0=pyh8a188c0_0
   - tk=8.6.10=hbc83047_0
+  - tqdm=4.62.0=pyhd8ed1ab_0
+  - typer=0.3.2=pyhd8ed1ab_0
+  - typing-extensions=3.10.0.0=hd8ed1ab_0
+  - typing_extensions=3.10.0.0=pyha770c72_0
   - tzdata=2021a=h52ac0ba_0
+  - urllib3=1.26.6=pyhd8ed1ab_0
+  - wasabi=0.8.2=pyh44b312d_0
   - wheel=0.36.2=pyhd3eb1b0_0
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
+  - pip:
+    - en-core-web-sm==3.1.0
 prefix: /home/viveky/anaconda3/envs/IVM
