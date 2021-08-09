@@ -1,4 +1,3 @@
-from cgi import test
 from vectorize import splitData, vectorize
 from model import Model
 from utils import CustomDataset
@@ -55,7 +54,7 @@ def runEpoch(dataloader, model, loss_type, optimizer=None, desc=None):
 
     return mean_loss, mean_acc
     
-def train(vec_type, input_shape, num_epochs, path):
+def train(num_epochs, vec_type, input_shape, path):
     X_train, X_test, y_train, y_test = splitData()
     train_vecs, test_vecs = vectorize(X_train, X_test, vocab_size=input_shape, model_type = vec_type)
 
@@ -63,7 +62,10 @@ def train(vec_type, input_shape, num_epochs, path):
     testData = CustomDataset(test_vecs, y_test)
     trainDL, valDL = trainValSplit(trainData, batch_size=10)
 
-    model = Model(input_shape).to(device)
+    output_shape = len(y_train.iloc[0])
+    print(y_train)
+    print(output_shape)
+    model = Model(input_shape, output_shape).to(device)
 
     loss_type = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters())
@@ -91,10 +93,16 @@ def train(vec_type, input_shape, num_epochs, path):
             best_accuracy = val_acc
             torch.save(model.state_dict(), "models/" + path)
     
-    return model, testData
+    return testData
 
-def test(model, testData):
+def test(model_path, testData):
+    X,y = testData
     testDL = DataLoader(testData, batch_size=10, num_workers=1, pin_memory=True)
+
+    input_shape = len(X.iloc[0])
+    output_shape = len(y.iloc[0])
+    model = Model(input_shape, output_shape)
+    model.load_state_dict(torch.load(model_path))
 
     loss_type = nn.CrossEntropyLoss()
     model.eval()
@@ -103,3 +111,6 @@ def test(model, testData):
     
     return test_loss, test_acc
 
+if __name__ == "__main__":
+    train(10, 'tfidf', 20, 'tfidf.pt')
+    test('models/tfidf')

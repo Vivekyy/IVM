@@ -25,7 +25,7 @@ def getXy():
 
 class CustomDataset(Dataset):
 
-    def __init__(X, y, self, transform=None):
+    def __init__(self, X, y, transform=None):
         
         self.X = X
         self.y = y
