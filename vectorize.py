@@ -1,20 +1,28 @@
 from utils import getXy
 
-from sklearn.utils import shuffle
+import pandas as pd
+
+#Replaces sci-kit learn
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.model_selection import train_test_split
+#from cuml.model_selection import train_test_split
 
 import spacy
 
-def splitData():
-    X,y = getXy()
-    X,y = shuffle(X, y)
+def splitData(split=.8):
+    X,y = getXy(split)
 
-    X_train = X.iloc[:int(.8*len(X))]
-    X_test = X.iloc[int(.8*len(X)):]
+    if split=='debug': #for quick debugging
+        X_train = X.iloc[:int(.05*len(X))]
+        X_test = X.iloc[:int(.05*len(X))]
 
-    y_train = y.iloc[:int(.8*len(y))]
-    y_test = y.iloc[int(.8*len(y)):]
+        y_train = y.iloc[:int(.05*len(y))]
+        y_test = y.iloc[:int(.05*len(y))]
+    else:
+        X_train = X.iloc[:int(split*len(X))]
+        X_test = X.iloc[int(split*len(X)):]
+
+        y_train = y.iloc[:int(split*len(y))]
+        y_test = y.iloc[int(split*len(y)):]
 
     return X_train, X_test, y_train, y_test
 
@@ -25,7 +33,10 @@ def vectorize(X_train, X_test, vocab_size=800, model_type = 'TFIDF'):
         vectorizer = TfidfVectorizer(analyzer=tokenize, max_features=vocab_size)
     
     train_vecs = vectorizer.fit_transform(X_train)
+    #train_vecs = pd.DataFrame(train_vecs)
+
     test_vecs = vectorizer.transform(X_test)
+    #test_vecs = pd.DataFrame(test_vecs)
 
     return train_vecs, test_vecs
 

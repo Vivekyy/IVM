@@ -5,17 +5,13 @@ class Model(nn.Module):
         super().__init__()
         
         self.classifier=nn.Sequential(
-            nn.Linear(input_shape),
+            nn.Linear(input_shape, 1200),
             nn.ReLU(),
-            nn.Linear(1200),
+            nn.Linear(1200, 1600),
             nn.ReLU(),
-            nn.Linear(1600),
+            nn.Linear(1600, 1200),
             nn.ReLU(),
-            nn.Linear(1200),
-            nn.ReLU(),
-            nn.Linear(600),
-            nn.ReLU(),
-            nn.Linear(output_shape)
+            nn.Linear(1200, output_shape),
         )
 
     def forward(self, x):

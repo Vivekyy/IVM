@@ -1,7 +1,19 @@
+#Replaces pandas
+import cudf
+
 import pandas as pd
+import scipy
 
 import torch
 from torch.utils.data import Dataset
+import torchvision.transforms as transforms
+
+def getDevice():
+    if torch.cuda.is_available():
+        device = torch.device('cuda:0')
+    else:
+        device = torch.device('cpu')
+    return device
 
 def getData():
     df = pd.read_excel('IntegratedValueModelrawdata.xlsx')
@@ -10,12 +22,17 @@ def getData():
 
     return df
 
-def getXy():
+def getXy(split):
     df = getData()
+
+    df.sample(frac=1).reset_index(drop=True) #Shuffles data and resets indices
 
     X = df.groupby('Component ID')['Component Description'].max()
 
-    y_dummies = pd.get_dummies(df['Related Component ID'])
+    if split=='debug': #for debugging
+        split=.05
+    
+    y_dummies = pd.get_dummies(df['Related Component ID'].iloc[:int(split*len(X))])
 
     df2 = pd.concat([df['Component ID'],y_dummies], axis=1)
 
@@ -29,18 +46,40 @@ class CustomDataset(Dataset):
         
         self.X = X
         self.y = y
+        
         self.transform = transform
-
+        
     def __len__(self):
-        return len(self.X)
+        return self.X.shape[0]
 
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        sample = {'X': self.X.iloc[idx], 'y': self.y.iloc[idx]}
-
+        #Handle different input datatypes and convert to tensors
+        if isinstance(self.X, pd.DataFrame):
+            X_idx = torch.from_numpy(self.X.iloc[idx].to_numpy())
+        else:
+            X_idx = self.X[idx]
+        
+        if isinstance(X_idx, scipy.sparse.csr.csr_matrix):
+            X_idx = torch.from_numpy(X_idx.toarray())
+        
+        if isinstance(self.y, pd.DataFrame):
+            y_idx = torch.from_numpy(self.y.iloc[idx].to_numpy())
+        else:
+            y_idx = self.y[idx]
+        
+        if isinstance(y_idx, scipy.sparse.csr.csr_matrix):
+            y_idx = torch.from_numpy(y_idx.toarray())
+        
+        X_idx, y_idx = torch.squeeze(X_idx).type(torch.FloatTensor), y_idx.type(torch.FloatTensor)
+        
+        #Apply transformations
         if self.transform:
-            sample = self.transform(sample)
+            X_idx = self.transform(X_idx)
+            y_idx = self.transform(y_idx)
+
+        sample = {'X': X_idx, 'y': y_idx}
 
         return sample
