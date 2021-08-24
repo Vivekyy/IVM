@@ -9,7 +9,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import spacy
 
 def splitData(split=.8):
-    X,y = getXy(split)
+    X,y,y_map = getXy(split)
 
     if split=='debug': #for quick debugging
         X_train = X.iloc[:int(.05*len(X))]
@@ -24,7 +24,7 @@ def splitData(split=.8):
         y_train = y.iloc[:int(split*len(y))]
         y_test = y.iloc[int(split*len(y)):]
 
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, y_map
 
 def vectorize(X_train, X_test, vocab_size=800, model_type = 'TFIDF'):
     if model_type.upper() == "BOW":

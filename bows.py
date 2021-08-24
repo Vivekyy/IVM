@@ -3,6 +3,7 @@ from model import Model
 from utils import CustomDataset, getDevice
 
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 import time
 
@@ -65,7 +66,8 @@ def getAcc(y_pred, y): #Necessary because we are going for multi-target accuracy
     return acc
     
 def train(num_epochs, vec_type, input_shape, path, split=.8):
-    X_train, X_test, y_train, y_test = splitData(split)
+    X_train, X_test, y_train, y_test, y_map = splitData(split)
+    y_map.to_pickle("keys/" + path + ".pkl")
 
     print("Vectorizing Data (%s)" % vec_type)
     tic = time.perf_counter()
@@ -87,7 +89,7 @@ def train(num_epochs, vec_type, input_shape, path, split=.8):
 
     best_accuracy=0
     for epoch in range(num_epochs):
-        desc = str(vec_type) + ": Epoch " + str(epoch)
+        desc = str(vec_type) + ": Epoch " + str(epoch+1)
         
         model.train()
         train_loss, train_acc = runEpoch(trainDL, model, loss_type, optimizer=optimizer, desc = desc + " (Train)")
@@ -103,9 +105,9 @@ def train(num_epochs, vec_type, input_shape, path, split=.8):
         print("Validation Accuracy:", val_acc)
 
         if val_acc > best_accuracy:
-            print("New Best Accuracy: Saving Epoch", epoch)
+            print("New Best Accuracy: Saving Epoch", epoch+1)
             best_accuracy = val_acc
-            torch.save(model.state_dict(), "models/" + path)
+            torch.save(model.state_dict(), "models/" + path + ".pt")
         
         print()
     
@@ -133,8 +135,14 @@ def test(model_path, testData):
     return test_loss, test_acc
 
 if __name__ == "__main__":
-    testData = train(10, 'BOW', 500, 'bow.pt')
-    test_loss, test_acc = test('models/bow.pt', testData)
+    path = 'bow'
+
+    testData = train(10, 'BOW', 500, path)
+    test_loss, test_acc = test('models/' + path + '.pt', testData)
     print("Testing Loss: ", test_loss)
     print("Testing Acc: ", test_acc)
+    print()
+
+    key = pd.read_pickle('keys/' + path + '.pkl')
+    print(key)
     print()

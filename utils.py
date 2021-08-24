@@ -32,13 +32,16 @@ def getXy(split):
     if split=='debug': #for debugging
         split=.05
     
-    y_dummies = pd.get_dummies(df['Related Component ID'].iloc[:int(split*len(X))])
+    y_dummies = pd.get_dummies(df['Related Component ID']) #.iloc[:int(split*len(X))] 
+    #add above as attempt at doing only train-relevant related components
+
+    y_map = y_dummies.columns.to_frame(index=False, name='Related Component ID')
 
     df2 = pd.concat([df['Component ID'],y_dummies], axis=1)
 
     grouped_df = df2.groupby('Component ID').sum()
 
-    return X, grouped_df
+    return X, grouped_df, y_map
 
 class CustomDataset(Dataset):
 
