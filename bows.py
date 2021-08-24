@@ -66,6 +66,8 @@ def getAcc(y_pred, y): #Necessary because we are going for multi-target accuracy
     return acc
     
 def train(num_epochs, vec_type, input_shape, path, split=.8):
+    start = time.perf_counter()
+
     X_train, X_test, y_train, y_test, y_map = splitData(split)
     y_map.to_pickle("keys/" + path + ".pkl")
 
@@ -111,7 +113,9 @@ def train(num_epochs, vec_type, input_shape, path, split=.8):
         
         print()
     
-    return testData
+    stop = time.perf_counter()
+    traintime = stop - start
+    return testData, traintime
 
 def test(model_path, testData):
     testDL = DataLoader(testData, batch_size=10, num_workers=1, pin_memory=True)
@@ -137,10 +141,13 @@ def test(model_path, testData):
 if __name__ == "__main__":
     path = 'bow'
 
-    testData = train(10, 'BOW', 500, path)
+    testData, traintime = train(10, 'BOW', 500, path)
     test_loss, test_acc = test('models/' + path + '.pt', testData)
     print("Testing Loss: ", test_loss)
     print("Testing Acc: ", test_acc)
+    print()
+
+    print(f"Total Training Time: {traintime:0.2f}")
     print()
 
     key = pd.read_pickle('keys/' + path + '.pkl')
