@@ -14,15 +14,15 @@ def getDevice():
         device = torch.device('cpu')
     return device
 
-def getData():
-    df = pd.read_excel('IntegratedValueModelrawdata.xlsx')
+def getData(dataset_path):
+    df = pd.read_excel(dataset_path)
     
     df = df[['Component', 'Component ID', 'Related Component', 'Related Component ID', 'Component Description', 'Related Component Description']]
 
     return df
 
-def getXy(split):
-    df = getData()
+def getXy(split, dataset_path):
+    df = getData(dataset_path)
 
     df.sample(frac=1).reset_index(drop=True) #Shuffles data and resets indices
 

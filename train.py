@@ -66,10 +66,10 @@ def getAcc(y_pred, y): #Necessary because we are going for multi-target accuracy
 
     return acc
     
-def train(num_epochs, vec_type, input_shape, path, split=.8):
+def train(num_epochs, vec_type, input_shape, path, split=.8, dataset_path='IntegratedValueModelrawdata.xlsx'):
     start = time.perf_counter()
 
-    X_train, X_test, y_train, y_test, y_map = splitData(split)
+    X_train, X_test, y_train, y_test, y_map = splitData(split, dataset_path)
     y_map.to_pickle("keys/" + path + ".pkl")
 
     print("Vectorizing Data (%s)" % vec_type)
@@ -146,18 +146,19 @@ def getArgs():
     parser.add_argument('--epochs', help='The number of epochs you would like to train the model for (Default: 10)', default=10, dest='epochs')
     parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500)', default=500, dest='vocab_size')
     parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. If you want to debug the model, input \'debug\' (Default: .8)', default=.8, dest='split')
+    parser.add_argument('--dataset_path', help='The path for the dataset you would like to access (Default: \'IntegratedValueModelrawdata.xlsx\')', default='IntegratedValueModelrawdata.xlsx', dest='dataset_path')
 
     args = parser.parse_args()
 
     if args.split == 'debug': #Avoid overwriting existing models on debug run
         args.path = 'debug'
 
-    return args.path, args.epochs, args.vocab_size, args.split
+    return args.path, args.epochs, args.vocab_size, args.split, args.dataset_path
 
 if __name__ == "__main__":
-    path, epochs, vocab_size, split = getArgs()
+    path, epochs, vocab_size, split, dataset_path = getArgs()
 
-    testData, traintime = train(epochs, 'BOW', vocab_size, path, split)
+    testData, traintime = train(epochs, 'BOW', vocab_size, path, split, dataset_path)
     test_loss, test_acc = test('models/' + path + '.pt', testData)
     print("Testing Loss: ", test_loss)
     print("Testing Acc: ", test_acc)

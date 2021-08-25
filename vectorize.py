@@ -8,8 +8,8 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 import spacy
 
-def splitData(split=.8):
-    X,y,y_map = getXy(split)
+def splitData(split=.8, dataset_path='IntegratedValueModelrawdata.xlsx'):
+    X,y,y_map = getXy(split, dataset_path)
 
     if split=='debug': #for quick debugging
         X_train = X.iloc[:int(.05*len(X))]
