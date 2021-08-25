@@ -7,6 +7,10 @@ http://basilwhite.com/ivm/
 Here you will find a neural network prediction system that will take in a description for a component and output a list of dependent components it believes will be related to this input.
 
 How to use it:
-The simplest way to use this is to add in a .txt file containing the description to the IVM folder. Then, run use.py specifying the name of the file in quotation marks on the command line (this should look like: python use.py '[YOUR_FILENAME].txt'). This will then print out a list of dependent components it believes to be relevant to your input description.
+The simplest way to use this is to add your description to the file titled "description.md". Then, run use_model.py. This will then print out a list of dependent components it believes to be relevant to your input description.
 
-You can also modify the network if needed, use -h to see the customizable parameters in model.py.
+You can also modify the training protocol if needed and train multiple different networks, use -h to see the customizable parameters in model.py and in use_model.py.
+
+If you alter the vocabulary size from 500 when training the model, be sure to specify the vocabulary size in the --input_shape parameter when running use_model.py.
+
+If you are using models other than models/bow.pt, make sure to specify the name of the model you are using by adding a --model_path argument after use_model.py. The model should be saved into the "models" folder and the argument used for --model_path should be the name of the model without the folder name or the .pt extension (for example, the model stored at "models/bow.pt" would be specified in the command line as "bow").
