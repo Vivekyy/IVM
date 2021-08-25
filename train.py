@@ -167,6 +167,7 @@ if __name__ == "__main__":
     print(f"Total Training Time: {traintime:0.2f}")
     print()
 
+    #For printing out the saved key of Dependent Component IDs
     '''
     key = pd.read_pickle('keys/' + path + '.pkl')
     print(key)

@@ -26,7 +26,7 @@ def splitData(split=.8, dataset_path='IntegratedValueModelrawdata.xlsx'):
 
     return X_train, X_test, y_train, y_test, y_map
 
-def vectorize(X_train, X_test, vocab_size=800, model_type = 'TFIDF'):
+def vectorize(X_train, X_test, vocab_size=800, model_type = 'BOW'):
     if model_type.upper() == "BOW":
         vectorizer = CountVectorizer(analyzer=tokenize, max_features=vocab_size) #Tokenize is callable, so used to process the raw input
     elif model_type.upper() == "TFIDF":
@@ -48,6 +48,6 @@ def tokenize(line):
 
 if __name__ == "__main__":
     X_train, X_test, y_train, y_test = splitData()
-    train_vecs, test_vecs = vectorize(X_train, X_test, model_type = 'TFIDF')
+    train_vecs, test_vecs = vectorize(X_train, X_test, model_type = 'BOW')
 
     print(test_vecs)
