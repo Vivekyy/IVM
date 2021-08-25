@@ -11,6 +11,6 @@ The simplest way to use this is to add your description to the file titled "desc
 
 You can also modify the training protocol if needed and train multiple different networks, use -h to see the customizable parameters in model.py and in use_model.py.
 
-If you alter the vocabulary size from 500 when training the model, be sure to specify the vocabulary size in the --input_shape parameter when running use_model.py.
+If you alter the vocabulary size from 500 when training the model, be sure to specify the new vocabulary size in the --vocab_size parameter when running use_model.py.
 
-If you are using models other than models/bow.pt, make sure to specify the name of the model you are using by adding a --model_path argument after use_model.py. The model should be saved into the "models" folder and the argument used for --model_path should be the name of the model without the folder name or the .pt extension (for example, the model stored at "models/bow.pt" would be specified in the command line as "bow").
+If you are using models other than models/bow.pt, make sure to specify the name of the model you are using with the --model_path parameter when running use_model.py. The model should be saved into the "models" folder and the argument used for --model_path should be the name of the model without the folder name or the .pt extension (for example, running use_model.py with the model stored at "models/bow.pt" would be accomplished by typing "python use_model.py --model_path bow").

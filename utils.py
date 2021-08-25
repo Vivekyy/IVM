@@ -1,12 +1,11 @@
-#Replaces pandas
-import cudf
+#Cudf can replace pandas for potential speedup, not using cudf due to compatibility issues with the environment setup
+#import cudf
 
 import pandas as pd
 import scipy
 
 import torch
 from torch.utils.data import Dataset
-import torchvision.transforms as transforms
 
 def getDevice():
     if torch.cuda.is_available():
@@ -34,6 +33,7 @@ def getXy(split):
     
     y_dummies = pd.get_dummies(df['Related Component ID']) #.iloc[:int(split*len(X))] 
     #add above as attempt at doing only train-relevant related components
+    #omitted because the model seems to perform well regardless
 
     y_map = y_dummies.columns.to_frame(index=False, name='Related Component ID')
 

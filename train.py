@@ -142,18 +142,22 @@ def test(model_path, testData):
 def getArgs():
     parser = argparse.ArgumentParser(description='Train the prediction model')
 
-    parser.add_argument('--path', help='What you would like the model to be named--for example, bow would be stored as models/bow.pt (Default: bow)', default='bow', dest='path')
+    parser.add_argument('--path', help='What you would like the model to be named. For example, bow would be stored as models/bow.pt (Default: bow)', default='bow', dest='path')
     parser.add_argument('--epochs', help='The number of epochs you would like to train the model for (Default: 10)', default=10, dest='epochs')
-    parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500', default=500, dest='vocab_size')
+    parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500)', default=500, dest='vocab_size')
+    parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. If you want to debug the model, input \'debug\' (Default: .8)', default=.8, dest='split')
 
     args = parser.parse_args()
 
-    return args.path, args.epochs, args.vocab_size
+    if args.split == 'debug': #Avoid overwriting existing models on debug run
+        args.path = 'debug'
+
+    return args.path, args.epochs, args.vocab_size, args.split
 
 if __name__ == "__main__":
-    path, epochs, vocab_size = getArgs()
+    path, epochs, vocab_size, split = getArgs()
 
-    testData, traintime = train(epochs, 'BOW', vocab_size, path)
+    testData, traintime = train(epochs, 'BOW', vocab_size, path, split)
     test_loss, test_acc = test('models/' + path + '.pt', testData)
     print("Testing Loss: ", test_loss)
     print("Testing Acc: ", test_acc)
@@ -162,6 +166,8 @@ if __name__ == "__main__":
     print(f"Total Training Time: {traintime:0.2f}")
     print()
 
+    '''
     key = pd.read_pickle('keys/' + path + '.pkl')
     print(key)
     print()
+    '''

@@ -2,9 +2,9 @@ from utils import getXy
 
 import pandas as pd
 
-#Replaces sci-kit learn
+#Cuml can replace sci-kit learn for potential speedup
+#Not using cuml due to buggy import issues
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-#from cuml.model_selection import train_test_split
 
 import spacy
 
@@ -33,10 +33,8 @@ def vectorize(X_train, X_test, vocab_size=800, model_type = 'TFIDF'):
         vectorizer = TfidfVectorizer(analyzer=tokenize, max_features=vocab_size)
     
     train_vecs = vectorizer.fit_transform(X_train)
-    #train_vecs = pd.DataFrame(train_vecs)
 
     test_vecs = vectorizer.transform(X_test)
-    #test_vecs = pd.DataFrame(test_vecs)
 
     return train_vecs, test_vecs
 
