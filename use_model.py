@@ -41,7 +41,7 @@ def fetchDescriptions(idDF):
 def getArgs():
     parser = argparse.ArgumentParser(description='Get predicted dependent components')
 
-    parser.add_argument('--description', help='The description of the component you want to get predictions from', default='description.md')
+    parser.add_argument('--description', help='The file containing the description of the component you want to get predictions from (Default: description.md)', default='description.md')
     parser.add_argument('--model_path', help='The model which you would like to use (Default: bow)', default='bow', dest='path')
     parser.add_argument('--input_shape', help='The size of the vocabulary that the model was trained on (Default: 500)', default=500, dest='input_shape')
 

@@ -2,6 +2,7 @@ from vectorize import splitData, vectorize
 from model import Model
 from utils import CustomDataset, getDevice
 
+import argparse
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -138,10 +139,21 @@ def test(model_path, testData):
     
     return test_loss, test_acc
 
-if __name__ == "__main__":
-    path = 'bow'
+def getArgs():
+    parser = argparse.ArgumentParser(description='Train the prediction model')
 
-    testData, traintime = train(10, 'BOW', 500, path)
+    parser.add_argument('--path', help='What you would like the model to be named--for example, bow would be stored as models/bow.pt (Default: bow)', default='bow', dest='path')
+    parser.add_argument('--epochs', help='The number of epochs you would like to train the model for (Default: 10)', default=10, dest='epochs')
+    parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500', default=500, dest='vocab_size')
+
+    args = parser.parse_args()
+
+    return args.path, args.epochs, args.vocab_size
+
+if __name__ == "__main__":
+    path, epochs, vocab_size = getArgs()
+
+    testData, traintime = train(epochs, 'BOW', vocab_size, path)
     test_loss, test_acc = test('models/' + path + '.pt', testData)
     print("Testing Loss: ", test_loss)
     print("Testing Acc: ", test_acc)
