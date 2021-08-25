@@ -4,7 +4,6 @@ from utils import CustomDataset, getDevice
 
 import argparse
 import numpy as np
-import pandas as pd
 from tqdm import tqdm
 import time
 
@@ -41,7 +40,7 @@ def runEpoch(dataloader, model, loss_type, optimizer=None, desc=None):
 
         y_pred = model(X)
 
-        loss = loss_type(y_pred, y)
+        loss = loss_type(y_pred, y*2) #Experimenting with weighting to decrease false negatives
 
         if optimizer is not None:
             optimizer.zero_grad()

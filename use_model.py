@@ -9,7 +9,7 @@ import torch
 
 device = getDevice()
 
-def main(description, path, input_shape):
+def main(description, out_path, path, input_shape, dataset_path):
     key = pd.read_pickle('keys/' + path + '.pkl')
     output_shape = len(key.index)
 
@@ -25,39 +25,65 @@ def main(description, path, input_shape):
 
     usable_preds = translatePreds(preds, key)
 
-    descriptions = fetchDescriptions(usable_preds)
+    out_descriptions = fetchDescriptions(usable_preds, dataset_path)
 
-    output = pd.concat([usable_preds,descriptions], axis=1)
+    output = pd.concat([usable_preds,out_descriptions], axis=1)
+
+    output.to_excel(out_path)
 
     return output
 
 def getPreds(description, vectorizer, model):
 
+    with open (description, "r") as myfile:
+        desc_str = myfile.read()
 
+    X = vectorizer.transform([desc_str])
+    X = torch.from_numpy(X.toarray())
+    X = torch.squeeze(X).type(torch.FloatTensor)
+    X = X.to(device)
+
+    y_pred = model(X)
 
     return y_pred
 
 def translatePreds(preds, key):
 
+    preds = torch.round(preds)
+    dfPreds = pd.DataFrame(preds.cpu().detach().numpy())
+    dfPreds.columns = ['preds']
+
+    dfCat = pd.concat([key,dfPreds], axis=1)
+
+    idDF = dfCat.loc[dfCat['preds'] > 0.5]['Related Component ID'].to_frame()
+    idDF.columns = ['Related Component ID']
+    idDF = idDF.reset_index(drop=True)
+
     return idDF
 
-def fetchDescriptions(idDF):
+def fetchDescriptions(idDF, dataset_path):
+    
+    
+    dataDF = pd.read_excel(dataset_path)
+    descDF = idDF.merge(dataDF, how='inner', on='Related Component ID').drop_duplicates(subset='Related Component ID')['Related Component Description']
 
-    return descriptionDF
+    return descDF
 
 def getArgs():
     parser = argparse.ArgumentParser(description='Get predicted dependent components')
 
-    parser.add_argument('--description', help='The file containing the description of the component you want to get predictions from (Default: description.md)', default='description.md')
-    parser.add_argument('--model_path', help='The model which you would like to use (Default: bow)', default='bow', dest='path')
+    parser.add_argument('--description_path', help='The filename containing the description of the component you want to get predictions from (Default: description.txt)', default='description.txt', dest='description')
+    parser.add_argument('--output_path', help='The filename you want to output the predictions to', default='Output.xlsx', dest='output_path')
+    parser.add_argument('--model_name', help='The name of the model which you would like to use (Default: bow)', default='bow', dest='path')
     parser.add_argument('--vocab_size', help='The size of the vocabulary that the model was trained on (Default: 500)', default=500, dest='input_shape')
+    parser.add_argument('--dataset_path', help='The path for the dataset you would like to access (Default: \'IntegratedValueModelrawdata.xlsx\')', default='IntegratedValueModelrawdata.xlsx', dest='dataset_path')
 
     args = parser.parse_args()
 
-    return args.description, args.path, args.input_shape
+    return args.description, args.output_path, args.path, args.input_shape, args.dataset_path
 
 if __name__ == "__main__":
-    desc, path, input_shape = getArgs()
-    output = main(desc, path, input_shape)
+    desc, out_path, path, input_shape, dataset_path = getArgs()
+    output = main(desc, out_path, path, input_shape, dataset_path)
 
     print(output)

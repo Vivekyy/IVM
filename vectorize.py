@@ -1,6 +1,5 @@
 from utils import getXy
 
-import pandas as pd
 import pickle
 
 #Cuml can replace sci-kit learn for potential speedup
