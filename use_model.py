@@ -2,6 +2,7 @@ from model import Model
 from utils import getDevice
 
 import argparse
+import pickle
 import pandas as pd
 
 import torch
@@ -12,11 +13,15 @@ def main(description, path, input_shape):
     key = pd.read_pickle('keys/' + path + '.pkl')
     output_shape = len(key.index)
 
+    vec_path='vectorizers/' + path + '_vec.pkl'
+    with open(vec_path, 'rb') as f:
+        vectorizer = pickle.load(f)
+
     model = Model(input_shape, output_shape)
     model.load_state_dict(torch.load('models/'+path+'.pt'))
     model.to(device)
 
-    preds = getPreds(description, model)
+    preds = getPreds(description, vectorizer, model)
 
     usable_preds = translatePreds(preds, key)
 
@@ -26,7 +31,9 @@ def main(description, path, input_shape):
 
     return output
 
-def getPreds(description, model):
+def getPreds(description, vectorizer, model):
+
+
 
     return y_pred
 

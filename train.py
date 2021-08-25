@@ -74,7 +74,8 @@ def train(num_epochs, vec_type, input_shape, path, split=.8, dataset_path='Integ
 
     print("Vectorizing Data (%s)" % vec_type)
     tic = time.perf_counter()
-    train_vecs, test_vecs = vectorize(X_train, X_test, vocab_size=input_shape, model_type = vec_type)
+    vec_path = "vectorizers/"+path+"_vec.pkl"
+    train_vecs, test_vecs = vectorize(X_train, X_test, vec_path, vocab_size=input_shape, model_type = vec_type)
     toc = time.perf_counter()
     print(f"Done vectorizing data: {toc - tic:0.2f} seconds")
     print()
@@ -145,20 +146,23 @@ def getArgs():
     parser.add_argument('--path', help='What you would like the model to be named. For example, bow would be stored as models/bow.pt (Default: bow)', default='bow', dest='path')
     parser.add_argument('--epochs', help='The number of epochs you would like to train the model for (Default: 10)', default=10, dest='epochs')
     parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500)', default=500, dest='vocab_size')
+    parser.add_argument('--tfidf', help='Include this tag if you would like to train a TF-IDF model as opposed to the standard BOW model', action='store_const', const='TFIDF', default='BOW', dest='vec_type')
     parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. If you want to debug the model, input \'debug\' (Default: .8)', default=.8, dest='split')
     parser.add_argument('--dataset_path', help='The path for the dataset you would like to access (Default: \'IntegratedValueModelrawdata.xlsx\')', default='IntegratedValueModelrawdata.xlsx', dest='dataset_path')
 
     args = parser.parse_args()
+    if args.vec_type == 'TFIDF' and args.path == 'bow':
+        args.path = 'tfidf'
 
     if args.split == 'debug': #Avoid overwriting existing models on debug run
         args.path = 'debug'
 
-    return args.path, args.epochs, args.vocab_size, args.split, args.dataset_path
+    return args.path, args.epochs, args.vocab_size, args.vec_type, args.split, args.dataset_path
 
 if __name__ == "__main__":
-    path, epochs, vocab_size, split, dataset_path = getArgs()
+    path, epochs, vocab_size, vec_type, split, dataset_path = getArgs()
 
-    testData, traintime = train(epochs, 'BOW', vocab_size, path, split, dataset_path)
+    testData, traintime = train(epochs, vec_type, vocab_size, path, split, dataset_path)
     test_loss, test_acc = test('models/' + path + '.pt', testData)
     print("Testing Loss: ", test_loss)
     print("Testing Acc: ", test_acc)

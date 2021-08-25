@@ -1,6 +1,7 @@
 from utils import getXy
 
 import pandas as pd
+import pickle
 
 #Cuml can replace sci-kit learn for potential speedup
 #Not using cuml due to buggy import issues
@@ -26,7 +27,7 @@ def splitData(split=.8, dataset_path='IntegratedValueModelrawdata.xlsx'):
 
     return X_train, X_test, y_train, y_test, y_map
 
-def vectorize(X_train, X_test, vocab_size=800, model_type = 'BOW'):
+def vectorize(X_train, X_test, vec_path, vocab_size=800, model_type = 'BOW'):
     if model_type.upper() == "BOW":
         vectorizer = CountVectorizer(analyzer=tokenize, max_features=vocab_size) #Tokenize is callable, so used to process the raw input
     elif model_type.upper() == "TFIDF":
@@ -35,6 +36,9 @@ def vectorize(X_train, X_test, vocab_size=800, model_type = 'BOW'):
     train_vecs = vectorizer.fit_transform(X_train)
 
     test_vecs = vectorizer.transform(X_test)
+
+    with open(vec_path, 'wb') as pickle_file:
+        pickle.dump(vectorizer, pickle_file)
 
     return train_vecs, test_vecs
 
