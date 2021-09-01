@@ -28,6 +28,7 @@ def main(description, out_path, path, input_shape, dataset_path):
     out_descriptions = fetchDescriptions(usable_preds, dataset_path)
 
     output = pd.concat([usable_preds,out_descriptions], axis=1)
+    output = output.apply(lambda x: pd.Series(x.dropna().values))
 
     output.to_excel(out_path)
 
