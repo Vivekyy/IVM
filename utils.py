@@ -33,7 +33,7 @@ def getXy(split, dataset_path):
     
     y_dummies = pd.get_dummies(df['Related Component ID']) #.iloc[:int(split*len(X))] 
     #add above as attempt at doing only train-relevant related components
-    #omitted because the model seems to perform well regardless
+    #omitted because it doesn't seem to affect performance much
 
     y_map = y_dummies.columns.to_frame(index=False, name='Related Component ID')
 

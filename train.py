@@ -103,7 +103,10 @@ def train(num_epochs, vec_type, input_shape, path, weight, split=.8, dataset_pat
     output_shape = len(y_train.iloc[0])
     model = Model(input_shape, output_shape).to(device)
 
-    loss_type = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([[weight]]).to(device))
+    #vector with length = output_shape = number of classes filled with value = weight
+    weighting = torch.mul(weight, torch.ones(output_shape)).to(device)
+
+    loss_type = nn.BCEWithLogitsLoss(pos_weight=weighting)
     optimizer = optim.Adam(model.parameters())
     lr_schedule = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=1, verbose=True)
 
@@ -115,6 +118,7 @@ def train(num_epochs, vec_type, input_shape, path, weight, split=.8, dataset_pat
         train_loss, train_acc, train_sens = runEpoch(trainDL, model, loss_type, optimizer=optimizer, desc = desc + " (Train)")
 
         print("Training Loss:", train_loss)
+        print("Training Sensitivity:", train_sens)
 
         model.eval()
         with torch.no_grad():
@@ -164,7 +168,7 @@ def getArgs():
     parser.add_argument('--epochs', help='The number of epochs you would like to train the model for (Default: 10)', default=10, dest='epochs')
     parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500)', default=500, dest='vocab_size')
     parser.add_argument('--tfidf', help='Include this tag if you would like to train a TF-IDF model as opposed to the standard BOW model', action='store_const', const='TFIDF', default='BOW', dest='vec_type')
-    parser.add_argument('--weight', help='A weighting of the loss that corresponds to weighting false negatives. A higher weight will result in more recommendations (Default: 2)', default=2, dest='weight')
+    parser.add_argument('--weight', help='A weighting of the loss that corresponds to weighting false negatives. A higher weight will result in more recommendations (Default: 20)', default=20, dest='weight')
     parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. If you want to debug the model, input \'debug\' (Default: .8)', default=.8, dest='split')
     parser.add_argument('--dataset_path', help='The path for the dataset you would like to access (Default: \'IntegratedValueModelrawdata.xlsx\')', default='IntegratedValueModelrawdata.xlsx', dest='dataset_path')
 
