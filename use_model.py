@@ -75,11 +75,15 @@ def getArgs():
 
     parser.add_argument('--description_path', help='The filename containing the description of the component you want to get predictions from (Default: description.txt)', default='description.txt', dest='description')
     parser.add_argument('--output_path', help='The filename you want to output the predictions to', default='Output.xlsx', dest='output_path')
+    parser.add_argument('--tfidf', help='Include this tag if you want to use a tfidf model. (This is equivalent to inputing \'--model_name tfidf\')', action='store_const', const=True, default=False, dest='tfidf')
     parser.add_argument('--model_name', help='The name of the model which you would like to use (Default: bow)', default='bow', dest='path')
-    parser.add_argument('--vocab_size', help='The size of the vocabulary that the model was trained on (Default: 500)', default=500, dest='input_shape')
+    parser.add_argument('--vocab_size', help='The size of the vocabulary that the model was trained on (Default: 500)', default=500, dest='input_shape', type=int)
     parser.add_argument('--dataset_path', help='The path for the dataset you would like to access (Default: \'IntegratedValueModelrawdata.xlsx\')', default='IntegratedValueModelrawdata.xlsx', dest='dataset_path')
 
     args = parser.parse_args()
+
+    if args.tfidf == True:
+        args.path = 'tfidf'
 
     return args.description, args.output_path, args.path, args.input_shape, args.dataset_path
 

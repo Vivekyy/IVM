@@ -104,7 +104,7 @@ def train(num_epochs, vec_type, input_shape, path, weight, split=.8, dataset_pat
     model = Model(input_shape, output_shape).to(device)
 
     #vector with length = output_shape = number of classes filled with value = weight
-    weighting = torch.mul(weight, torch.ones(output_shape)).to(device)
+    weighting = torch.mul(torch.ones(output_shape), weight).to(device)
 
     loss_type = nn.BCEWithLogitsLoss(pos_weight=weighting)
     optimizer = optim.Adam(model.parameters())
@@ -165,11 +165,11 @@ def getArgs():
     parser = argparse.ArgumentParser(description='Train the prediction model')
 
     parser.add_argument('--path', help='What you would like the model to be named. For example, bow would be stored as models/bow.pt (Default: bow)', default='bow', dest='path')
-    parser.add_argument('--epochs', help='The number of epochs you would like to train the model for (Default: 10)', default=10, dest='epochs')
-    parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500)', default=500, dest='vocab_size')
+    parser.add_argument('--epochs', help='The number of epochs you would like to train the model for (Default: 10)', default=10, dest='epochs', type=int)
+    parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500)', default=500, dest='vocab_size', type=int)
     parser.add_argument('--tfidf', help='Include this tag if you would like to train a TF-IDF model as opposed to the standard BOW model', action='store_const', const='TFIDF', default='BOW', dest='vec_type')
-    parser.add_argument('--weight', help='A weighting of the loss that corresponds to weighting false negatives. A higher weight will result in more recommendations (Default: 20)', default=20, dest='weight')
-    parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. If you want to debug the model, input \'debug\' (Default: .8)', default=.8, dest='split')
+    parser.add_argument('--weight', help='A weighting of the loss that corresponds to weighting false negatives. A higher weight will result in more recommendations (Default: 20)', default=20, dest='weight', type=int)
+    parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. If you want to debug the model, input \'debug\' (Default: .8)', default=.8, dest='split', type=float)
     parser.add_argument('--dataset_path', help='The path for the dataset you would like to access (Default: \'IntegratedValueModelrawdata.xlsx\')', default='IntegratedValueModelrawdata.xlsx', dest='dataset_path')
 
     args = parser.parse_args()
