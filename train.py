@@ -169,15 +169,17 @@ def getArgs():
     parser.add_argument('--vocab_size', help='The size of the vocabulary the model is using to make predictions (Default: 500)', default=500, dest='vocab_size', type=int)
     parser.add_argument('--tfidf', help='Include this tag if you would like to train a TF-IDF model as opposed to the standard BOW model', action='store_const', const='TFIDF', default='BOW', dest='vec_type')
     parser.add_argument('--weight', help='A weighting of the loss that corresponds to weighting false negatives. A higher weight will result in more recommendations (Default: 20)', default=20, dest='weight', type=int)
-    parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. If you want to debug the model, input \'debug\' (Default: .8)', default=.8, dest='split', type=float)
+    parser.add_argument('--split', help='The portion of data you would like to use as training data--the rest will be used as testing data. (Default: .8)', default=.8, dest='split', type=float)
     parser.add_argument('--dataset_path', help='The path for the dataset you would like to access (Default: \'IntegratedValueModelrawdata.xlsx\')', default='IntegratedValueModelrawdata.xlsx', dest='dataset_path')
+    parser.add_argument('--debug', help='Include this tag if you would like to do a faster trial run of the code (the ouput model will not be useful).', action='store_const', const=True, default=False, dest='debug')
 
     args = parser.parse_args()
     if args.vec_type == 'TFIDF' and args.path == 'bow':
         args.path = 'tfidf'
 
-    if args.split == 'debug': #Avoid overwriting existing models on debug run
-        args.path = 'debug'
+    if args.debug == True:
+        args.split = 'debug'
+        args.path = 'debug' #Avoid overwriting existing models on debug run
 
     return args.path, args.epochs, args.vocab_size, args.vec_type, args.weight, args.split, args.dataset_path
 

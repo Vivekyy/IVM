@@ -30,11 +30,6 @@ def main(desc_file, out_path, path, input_shape, dataset_path):
 
             output.to_excel(writer, sheet_name=sheet_name)
 
-            for column in output: #Adjust column widths
-                column_width = max(output[column].astype(str).map(len).max(), len(column))
-                col_idx = output.columns.get_loc(column)
-                writer.sheets[sheet_name].set_column(col_idx, col_idx, column_width)
-
             desc_str = myfile.readline()
             n += 1
     
