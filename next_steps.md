@@ -1,0 +1,10 @@
+There are currently 1222 components and 1405 dependent components in the IVM dataset.
+
+Total training time: ~6.5 min for BOW and ~7 min for TFIDF (depends on GPU capability)
+
+Potential future steps (for anyone who may want to move forward with this project):
+Improving training time by potentially using the NVIDIA Rapids library as a speedup replacement for sci-kit learn. The difficulty with doing this is that importing Rapids alongside PyTorch has proven to be pretty challenging. It might even merit using multiple environments in order to do this most effectively.
+
+Creating a frontend in the form of a website or some other kind of UI for easier use of the model. As of now, doing everything in the command line and installing all the necessary packages for python will likely be notable barriers to use of this program. So, it would be nice to potentially set up some kind of frontend that could help people use this model more efficiently.
+
+Improving model results. As of now, the model is biased towards recommending dependent components that are often used (i.e. "Getting our veterans through this pandemic" and "Functions of Veterans Health Administration: in general" are both recommended pretty often). Figuring out improvements to training the model in order to handle somewhat skewed training data would likely be a large improvement on the model. Additionally, the model often gives pretty poor results (sometimes just providing no recommendations at all) especially when dealing with shorter component descriptions--this would also be a good place to work on in the future. Finally, just experimenting with model parameters and changing the defaults to the best parameters found through trial and error would likely help improve model performance, although such a process might be time intensive.
