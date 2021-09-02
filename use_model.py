@@ -9,7 +9,38 @@ import torch
 
 device = getDevice()
 
-def main(description, out_path, path, input_shape, dataset_path):
+def main(desc_file, out_path, path, input_shape, dataset_path):
+
+    writer = pd.ExcelWriter(out_path, engine='xlsxwriter')
+    workbook = writer.book
+
+    with open (desc_file, "r") as myfile:
+        desc_str = myfile.readline() #read line by line
+        n=1
+
+        while desc_str:
+            sheet_name = 'Sheet' + str(n)
+            output = getOutput(desc_str, path, input_shape, dataset_path)
+
+            print(desc_str)
+            print()
+            print(output)
+            print()
+            print()
+
+            output.to_excel(writer, sheet_name=sheet_name)
+
+            for column in output: #Adjust column widths
+                column_width = max(output[column].astype(str).map(len).max(), len(column))
+                col_idx = output.columns.get_loc(column)
+                writer.sheets[sheet_name].set_column(col_idx, col_idx, column_width)
+
+            desc_str = myfile.readline()
+            n += 1
+    
+    writer.save()
+
+def getOutput(description, path, input_shape, dataset_path):
     key = pd.read_pickle('keys/' + path + '.pkl')
     output_shape = len(key.index)
 
@@ -25,21 +56,16 @@ def main(description, out_path, path, input_shape, dataset_path):
 
     usable_preds = translatePreds(preds, key)
 
-    out_descriptions = fetchDescriptions(usable_preds, dataset_path)
+    out_components, out_descriptions = fetchDescriptions(usable_preds, dataset_path)
 
-    output = pd.concat([usable_preds,out_descriptions], axis=1)
+    output = pd.concat([out_components, usable_preds, out_descriptions], axis=1)
     output = output.apply(lambda x: pd.Series(x.dropna().values))
-
-    output.to_excel(out_path)
 
     return output
 
 def getPreds(description, vectorizer, model):
 
-    with open (description, "r") as myfile:
-        desc_str = myfile.read()
-
-    X = vectorizer.transform([desc_str])
+    X = vectorizer.transform([description])
     X = torch.from_numpy(X.toarray())
     X = torch.squeeze(X).type(torch.FloatTensor)
     X = X.to(device)
@@ -50,13 +76,14 @@ def getPreds(description, vectorizer, model):
 
 def translatePreds(preds, key):
 
-    preds = torch.round(preds)
     dfPreds = pd.DataFrame(preds.cpu().detach().numpy())
-    dfPreds.columns = ['preds']
+    dfPreds.columns = ['Prediction Value']
 
     dfCat = pd.concat([key,dfPreds], axis=1)
+    dfCat = dfCat.sort_values(['Prediction Value'], ascending=False) #Sort by confidence
 
-    idDF = dfCat.loc[dfCat['preds'] > 0.5]['Related Component ID'].to_frame()
+    idDF = dfCat.loc[dfCat['Prediction Value'] > 0.5]['Related Component ID'].to_frame() #.loc does not change order of elements
+
     idDF.columns = ['Related Component ID']
     idDF = idDF.reset_index(drop=True)
 
@@ -64,11 +91,12 @@ def translatePreds(preds, key):
 
 def fetchDescriptions(idDF, dataset_path):
     
-    
     dataDF = pd.read_excel(dataset_path)
+    
     descDF = idDF.merge(dataDF, how='inner', on='Related Component ID').drop_duplicates(subset='Related Component ID')['Related Component Description']
+    compDF = idDF.merge(dataDF, how='inner', on='Related Component ID').drop_duplicates(subset='Related Component ID')['Related Component']
 
-    return descDF
+    return compDF, descDF
 
 def getArgs():
     parser = argparse.ArgumentParser(description='Get predicted dependent components')
@@ -89,6 +117,4 @@ def getArgs():
 
 if __name__ == "__main__":
     desc, out_path, path, input_shape, dataset_path = getArgs()
-    output = main(desc, out_path, path, input_shape, dataset_path)
-
-    print(output)
+    main(desc, out_path, path, input_shape, dataset_path)

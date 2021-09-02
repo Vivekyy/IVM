@@ -2,6 +2,7 @@ name: IVM
 channels:
   - pytorch
   - nvidia
+  - anaconda
   - rapidsai
   - conda-forge
   - defaults
@@ -49,6 +50,7 @@ dependencies:
   - dataclasses=0.8=pyhc8e2a94_3
   - distributed=2021.5.1=py37h89c1867_0
   - dlpack=0.5=h9c3ff4c_0
+  - et_xmlfile=1.0.1=py_1001
   - faiss-proc=1.0.0=cuda
   - fastavro=1.4.4=py37h5e8e339_0
   - fastrlock=0.6=py37hcd2ae1e_1
@@ -63,6 +65,7 @@ dependencies:
   - importlib-metadata=4.6.4=py37h89c1867_0
   - intel-openmp=2021.3.0=h06a4308_3350
   - jbig=2.1=h7f98852_2003
+  - jdcal=1.4.1=py_0
   - jinja2=3.0.1=pyhd8ed1ab_0
   - joblib=1.0.1=pyhd8ed1ab_0
   - jpeg=9d=h36c2ea0_0
@@ -123,7 +126,8 @@ dependencies:
   - nvtx=0.2.3=py37h5e8e339_0
   - olefile=0.46=pyh9f0ad1d_1
   - openjpeg=2.4.0=hb52868f_1
-  - openssl=1.1.1k=h7f98852_0
+  - openpyxl=3.0.5=py_0
+  - openssl=1.1.1k=h7f98852_1
   - orc=1.6.10=h58a87f1_0
   - packaging=21.0=pyhd8ed1ab_0
   - pandas=1.2.5=py37h219a48f_0
@@ -184,6 +188,8 @@ dependencies:
   - urllib3=1.26.6=pyhd8ed1ab_0
   - wasabi=0.8.2=pyh44b312d_0
   - wheel=0.37.0=pyhd8ed1ab_1
+  - xlrd=1.2.0=py37_0
+  - xlsxwriter=3.0.1=pyhd8ed1ab_0
   - xz=5.2.5=h516909a_1
   - yaml=0.2.5=h516909a_0
   - zict=2.0.0=py_0
